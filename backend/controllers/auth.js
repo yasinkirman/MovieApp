@@ -22,7 +22,7 @@ const register = async (req, res) => {
     //password şifrele
     const passwordHash = await bcrypt.hash(password, 12);
 
-    //email formatına uygun mu
+    //email formatına uygun mu?
     if (!isEmail(email)) {
       return res.status(400).json({ msg: "Invalid email format" });
     }
@@ -33,14 +33,56 @@ const register = async (req, res) => {
       email,
       password: passwordHash,
     });
-  } catch (error) {}
+
+    //token oluştur
+    const token = jwt.sign({ id: newUser._id }, "SECRET_KEY", {
+      expiresIn: "1h",
+    });
+
+    //register başarılı
+    res.status(201).json({
+      status: "OK",
+      newUser,
+      token,
+    });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
 
 const login = async (req, res) => {
   try {
-  } catch (error) {}
+    const { email, password } = req.body;
+
+    //kayıtlı email var mı?
+    const user = await AuthSchema.findOne(email);
+    if (!user) {
+      return res.status(401).json({ msg: "Invalid email" });
+    }
+
+    //şifre doğru mu?
+    const passwordCompare = await bcrypt.compare(password, user.password);
+    if (!passwordCompare) {
+      return res.status(401).json({ msg: "Wrong password" });
+    }
+
+    //token oluştur
+    const token = jwt.sign({ id: user._id }, "SECRET_KEY", {
+      expiresIn: "1h",
+    });
+
+    //login başarılı
+    res.status(200).json({
+      status: "OK",
+      user,
+      token,
+    });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
 
+//email formatına uygun mu
 function isEmail(emailAdress) {
   let regex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
