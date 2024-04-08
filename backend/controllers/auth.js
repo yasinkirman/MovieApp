@@ -1,6 +1,7 @@
 import AuthSchema from "../models/auth.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { isEmail } from "../utils/isEmail.js";
 
 const register = async (req, res) => {
   try {
@@ -83,11 +84,11 @@ const login = async (req, res) => {
 };
 
 //email formatına uygun mu?
-function isEmail(emailAdress) {
-  let regex =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (emailAdress.match(regex)) return true;
-  else return false;
-}
+// function isEmail(emailAdress) {
+//   let regex =
+//     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+//   if (emailAdress.match(regex)) return true;
+//   else return false;
+// }
 
 export default { register, login };
