@@ -15,4 +15,3 @@ const database = () => {
 };
 
 export default database;
-1;
